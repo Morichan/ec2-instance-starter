@@ -1,3 +1,11 @@
+# Custom configures
+
+# SAM created
+.aws-sam/
+samconfig.toml
+
+# End custom configures
+
 
 # Created by https://www.gitignore.io/api/osx,linux,python,windows,pycharm,visualstudiocode
 

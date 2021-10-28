@@ -1,16 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  ec2-instance-starter
-
-  Sample SAM Template for ec2-instance-starter
+  EC2 Instance Starter
 
 Globals:
   Function:
     Timeout: 3
 
 Resources:
-  HelloWorldFunction:
+  EC2InstanceStarter:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/
@@ -19,19 +17,16 @@ Resources:
       Architectures:
         - x86_64
       Events:
-        HelloWorld:
+        StartEC2Instance:
           Type: Api
           Properties:
-            Path: /hello
-            Method: get
+            Path: /start
+            Method: post
 
 Outputs:
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+  EC2InstanceStarterApi:
+    Description: "API Gateway endpoint URL for Prod stage for EC2 Instance Starter function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/start/"
+  EC2InstanceStarterIamRoleArn:
+    Description: "Implicit IAM Role created for EC2 Instance Starter function"
+    Value: !GetAtt EC2InstanceStarterRole.Arn

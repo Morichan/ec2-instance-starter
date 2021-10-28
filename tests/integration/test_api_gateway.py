@@ -5,7 +5,7 @@ import boto3
 import requests
 
 """
-Make sure env variable AWS_SAM_STACK_NAME exists with the name of the stack we are going to test. 
+環境変数AWS_SAM_STACK_NAMEを定義することで、API Gatewayに直接テストが実行できる。
 """
 
 
@@ -24,10 +24,7 @@ class TestApiGateway(TestCase):
         return stack_name
 
     def setUp(self) -> None:
-        """
-        Based on the provided env variable AWS_SAM_STACK_NAME,
-        here we use cloudformation API to find out what the HelloWorldApi URL is
-        """
+        """環境変数AWS_SAM_STACK_NAMEを元にCloudFormation APIを利用してAPI GatewayのURLを取得する"""
         stack_name = TestApiGateway.get_stack_name()
 
         client = boto3.client("cloudformation")
@@ -48,8 +45,5 @@ class TestApiGateway(TestCase):
         self.api_endpoint = api_outputs[0]["OutputValue"]
 
     def test_api_gateway(self):
-        """
-        Call the API Gateway endpoint and check the response
-        """
         response = requests.get(self.api_endpoint)
         self.assertDictEqual(response.json(), {"message": "hello world"})

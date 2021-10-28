@@ -1,4 +1,9 @@
 import json
+import logging
+
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def lambda_handler(event, context):
@@ -20,9 +25,11 @@ def lambda_handler(event, context):
         https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
 
+    logger.info(f'{json.dumps(event)}')
+
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "message": "hello world",
+            "message": "OK",
         }),
     }

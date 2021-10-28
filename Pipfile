@@ -4,6 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [scripts]
+build = "sam build"
+deploy = "sam deploy"
 test = "pytest --cov --cov-branch tests/unit/"
 test-integration = "pytest --cov --cov-branch"
 install-dev = "pipenv install --dev -r tests/requirements.txt"

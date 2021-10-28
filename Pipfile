@@ -8,9 +8,11 @@ build = "sam build"
 deploy = "sam deploy"
 test = "pytest --cov --cov-branch tests/unit/"
 test-integration = "pytest --cov --cov-branch"
+install = "pipenv install -r src/requirements.txt"
 install-dev = "pipenv install --dev -r tests/requirements.txt"
 
 [packages]
+boto3 = "~=1.19"
 
 [dev-packages]
 boto3 = "~=1.19"
@@ -18,6 +20,7 @@ pytest = "~=6.2.5"
 pytest-mock = "~=3.6.1"
 requests = "~=2.26.0"
 pytest-cov = "~=3.0.0"
+moto = "~=2.2.11"
 
 [requires]
 python_version = "3.8"

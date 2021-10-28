@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[scripts]
+test = "pytest --cov --cov-branch tests/unit/"
+test-integration = "pytest --cov --cov-branch"
+install-dev = "pipenv install --dev -r tests/requirements.txt"
+
+[packages]
+
+[dev-packages]
+boto3 = "~=1.19"
+pytest = "~=6.2.5"
+pytest-mock = "~=3.6.1"
+requests = "~=2.26.0"
+pytest-cov = "~=3.0.0"
+
+[requires]
+python_version = "3.8"

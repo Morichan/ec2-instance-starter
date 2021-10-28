@@ -22,6 +22,14 @@ Resources:
           Properties:
             Path: /start
             Method: post
+      Policies:
+        - Statement:
+          - Sid: StartEC2Instance
+            Effect: Allow
+            Action:
+              - ec2:StartInstances
+            Resource:
+              - !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*
 
 Outputs:
   EC2InstanceStarterApi:

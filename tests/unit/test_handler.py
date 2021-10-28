@@ -153,3 +153,20 @@ def test_respond_error_if_body_is_not_found(create_apigw_event, mocker):
     assert ret['statusCode'] == 404
     assert 'message' in ret['body']
     assert data['message'] == 'Error'
+
+
+@mock_ec2
+def test_respond_message_if_ec2_instance_is_already_running(create_apigw_event, mocker):
+    """EC2インスタンスが起動している場合、メッセージを返す"""
+    ec2 = boto3.client('ec2', region_name='ap-northeast-1')
+    ec2.run_instances(ImageId=AMIS[0]['ami_id'], MinCount=2, MaxCount=2)
+    all_instance_info = ec2.describe_instances()
+    instance_id = all_instance_info['Reservations'][0]['Instances'][0]['InstanceId']
+    body_with_valid_instance_id = f'{{"instance_id": "{instance_id}"}}'
+
+    ret = app.lambda_handler(create_apigw_event(body_with_valid_instance_id), '')
+    data = json.loads(ret['body'])
+
+    assert ret['statusCode'] == 200
+    assert 'message' in ret['body']
+    assert data['message'] == 'Already running'

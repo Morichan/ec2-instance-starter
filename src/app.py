@@ -41,11 +41,15 @@ def lambda_handler(event, context):
         except json.decoder.JSONDecodeError:
             logger.exception(f'Invalid body: {event.get("body")}')
 
-    result = _start_ec2_instance(request_body.get('instance_id'))
+    instance_id = request_body.get('instance_id')
 
-    if not result:
-        status_code = 404
-        body_message = 'Error'
+    if _is_already_running(instance_id):
+        body_message = 'Already running'
+    else:
+       result = _start_ec2_instance(instance_id)
+       if not result:
+           status_code = 404
+           body_message = 'Error'
 
     return {
         "statusCode": status_code,
@@ -53,6 +57,17 @@ def lambda_handler(event, context):
             "message": body_message,
         }),
     }
+
+
+def _is_already_running(instance_id):
+    try:
+        response = ec2.describe_instances(InstanceIds=[instance_id])
+        state = response['Reservations'][0]['Instances'][0]['State']['Name']
+        # https://docs.aws.amazon.com/ja_jp/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html
+        logger.info(f'EC2 Instance {instance_id} state is {state}')
+        return state == 'running'
+    except:
+        logger.exception(f'Invalid EC2 instance ID: {instance_id}')
 
 
 def _start_ec2_instance(instance_id):

@@ -21,7 +21,7 @@ class EC2Instance:
             logger.exception(f'Invalid EC2 instance ID: {instance_id}')
             raise
 
-    def start_ec2_instance(self, instance_id):
+    def start(self, instance_id):
         try:
             return ec2.start_instances(InstanceIds=[instance_id])
         except Exception as e:

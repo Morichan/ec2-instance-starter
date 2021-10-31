@@ -40,7 +40,7 @@ class LambdaFunction:
             if self._ec2_instance.is_already_running(instance_id):
                 state = lambda_response.EC2InstanceIsAlreadyRunningState()
             else:
-                result = self._ec2_instance.start_ec2_instance(instance_id)
+                result = self._ec2_instance.start(instance_id)
                 if not result:
                     state = lambda_response.StartedEC2InstanceIsFailedState()
                 else:

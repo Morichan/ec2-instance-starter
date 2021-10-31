@@ -19,6 +19,7 @@ class EC2Instance:
             return state == 'running'
         except:
             logger.exception(f'Invalid EC2 instance ID: {instance_id}')
+            raise
 
     def start_ec2_instance(self, instance_id):
         try:

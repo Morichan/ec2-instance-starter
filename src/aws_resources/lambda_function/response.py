@@ -1,7 +1,7 @@
 import json
 
 
-class LambdaResponse:
+class Response:
     def __init__(self):
         self.status_code = 200
         self.body_message = 'OK'
@@ -36,7 +36,7 @@ class LambdaResponse:
         }
 
 
-class LambdaResponseState:
+class State:
     def __init__(self):
         self.check()
 
@@ -58,7 +58,7 @@ class LambdaResponseState:
         ]
 
 
-class LambdaResponseAcceptedState(LambdaResponseState):
+class AcceptedState(State):
     def __init__(self):
         super().check()
 
@@ -71,7 +71,7 @@ class LambdaResponseAcceptedState(LambdaResponseState):
         return 'Accepted'
 
 
-class LambdaResponseEC2InstanceIsAlreadyRunningState(LambdaResponseState):
+class EC2InstanceIsAlreadyRunningState(State):
     def __init__(self):
         super().check()
 
@@ -84,7 +84,7 @@ class LambdaResponseEC2InstanceIsAlreadyRunningState(LambdaResponseState):
         return 'Error: EC2 instance is had run.'
 
 
-class LambdaResponseEC2InstanceIdIsInvalidState(LambdaResponseState):
+class EC2InstanceIdIsInvalidState(State):
     def __init__(self):
         super().check()
 
@@ -97,7 +97,7 @@ class LambdaResponseEC2InstanceIdIsInvalidState(LambdaResponseState):
         return 'Error: instance_id is invalid.'
 
 
-class LambdaResponseBodyHasNotInstanceIdState(LambdaResponseState):
+class BodyHasNotInstanceIdState(State):
     def __init__(self):
         super().check()
 
@@ -110,7 +110,7 @@ class LambdaResponseBodyHasNotInstanceIdState(LambdaResponseState):
         return 'Error: body has not instance_id.'
 
 
-class LambdaResponseBodyIsNotJsonState(LambdaResponseState):
+class BodyIsNotJsonState(State):
     def __init__(self):
         super().check()
 
@@ -123,7 +123,7 @@ class LambdaResponseBodyIsNotJsonState(LambdaResponseState):
         return 'Error: body is not JSON format.'
 
 
-class LambdaResponseBodyIsEmptyState(LambdaResponseState):
+class BodyIsEmptyState(State):
     def __init__(self):
         super().check()
 
@@ -136,7 +136,7 @@ class LambdaResponseBodyIsEmptyState(LambdaResponseState):
         return 'Error: body is empty.'
 
 
-class LambdaResponseStartedEC2InstanceIsFailedState(LambdaResponseState):
+class StartedEC2InstanceIsFailedState(State):
     def __init__(self):
         super().check()
 

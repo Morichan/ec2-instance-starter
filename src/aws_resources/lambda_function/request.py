@@ -7,9 +7,9 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-class LambdaRequest:
+class Request:
     def __init__(self, event):
-        self.state = LambdaRequestState.UNDEFINED
+        self.state = State.UNDEFINED
         self.body = self.extract(event)
 
     @property
@@ -34,7 +34,7 @@ class LambdaRequest:
         if event.get('body'):
             body = self._extract_body(event)
         else:
-            self.state = LambdaRequestState.BODY_IS_EMPTY
+            self.state = State.BODY_IS_EMPTY
 
         return body
 
@@ -45,15 +45,15 @@ class LambdaRequest:
             body = json.loads(event.get('body'))
             self.instance_id = body['instance_id']
         except json.decoder.JSONDecodeError:
-            self.state = LambdaRequestState.BODY_IS_NOT_JSON
+            self.state = State.BODY_IS_NOT_JSON
             logger.exception(f'Invalid body: {event.get("body")}')
         except KeyError:
-            self.state = LambdaRequestState.BODY_HAS_NOT_INSTANCE_ID
+            self.state = State.BODY_HAS_NOT_INSTANCE_ID
 
         return body
 
 
-class LambdaRequestState(Enum):
+class State(Enum):
     UNDEFINED = auto()
     BODY_IS_EMPTY = auto()
     BODY_IS_NOT_JSON = auto()

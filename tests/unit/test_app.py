@@ -29,6 +29,18 @@ def test_respond_ok_if_valid_instance_id_is_sent(create_apigw_event, mocker):
 
 
 @mock_ec2
+def test_respond_error_if_instance_id_be_null_is_sent(create_apigw_event, mocker):
+    """NullなインスタンスIDを送信する場合、エラーを返す"""
+    body_with_invalid_instance_id = '{"instance_id": null}'
+    ret = app.lambda_handler(create_apigw_event(body_with_invalid_instance_id), '')
+    data = json.loads(ret['body'])
+
+    assert ret['statusCode'] == 400
+    assert 'message' in ret['body']
+    assert data['message'] == 'Error: instance_id is invalid.'
+
+
+@mock_ec2
 def test_respond_error_if_invalid_instance_id_is_sent(create_apigw_event, mocker):
     """無効なインスタンスIDを送信する場合、エラーを返す"""
     body_with_invalid_instance_id = '{"instance_id": "i-00000000000000000"}'

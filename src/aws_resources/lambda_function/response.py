@@ -3,17 +3,11 @@ import json
 
 class Response:
     def __init__(self):
-        self.status_code = 200
-        self.body_message = 'OK'
-        self.state = None
+        self.state = NoneState()
 
     @property
     def status_code(self):
-        return self._status_code
-
-    @status_code.setter
-    def status_code(self, status_code):
-        self._status_code = status_code
+        return self.state.status_code
 
     @property
     def body(self):
@@ -42,11 +36,11 @@ class State:
 
     @property
     def status_code(self):
-        raise
+        raise NotImplementedError
 
     @property
-    def body(self):
-        raise
+    def body_message(self):
+        raise NotImplementedError
 
     def check(self):
         self._check_must_overriding_methods()
@@ -58,10 +52,17 @@ class State:
         ]
 
 
-class AcceptedState(State):
-    def __init__(self):
-        super().check()
+class NoneState(State):
+    @property
+    def status_code(self):
+        return 500
 
+    @property
+    def body_message(self):
+        return 'Error: Internal Server Error.'
+
+
+class AcceptedState(State):
     @property
     def status_code(self):
         return 202
@@ -72,9 +73,6 @@ class AcceptedState(State):
 
 
 class EC2InstanceIsAlreadyRunningState(State):
-    def __init__(self):
-        super().check()
-
     @property
     def status_code(self):
         return 409
@@ -85,9 +83,6 @@ class EC2InstanceIsAlreadyRunningState(State):
 
 
 class EC2InstanceIdIsInvalidState(State):
-    def __init__(self):
-        super().check()
-
     @property
     def status_code(self):
         return 400
@@ -98,9 +93,6 @@ class EC2InstanceIdIsInvalidState(State):
 
 
 class BodyHasNotInstanceIdState(State):
-    def __init__(self):
-        super().check()
-
     @property
     def status_code(self):
         return 400
@@ -111,9 +103,6 @@ class BodyHasNotInstanceIdState(State):
 
 
 class BodyIsNotJsonState(State):
-    def __init__(self):
-        super().check()
-
     @property
     def status_code(self):
         return 400
@@ -124,9 +113,6 @@ class BodyIsNotJsonState(State):
 
 
 class BodyIsEmptyState(State):
-    def __init__(self):
-        super().check()
-
     @property
     def status_code(self):
         return 400
@@ -137,9 +123,6 @@ class BodyIsEmptyState(State):
 
 
 class StartedEC2InstanceIsFailedState(State):
-    def __init__(self):
-        super().check()
-
     @property
     def status_code(self):
         return 500

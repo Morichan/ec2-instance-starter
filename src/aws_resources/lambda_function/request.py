@@ -9,24 +9,17 @@ logger.setLevel(logging.INFO)
 
 class Request:
     def __init__(self, event):
-        self.state = State.UNDEFINED
-        self.body = self.extract(event)
-
-    @property
-    def body(self):
-        return self._body
-
-    @body.setter
-    def body(self, body):
-        self._body = body
+        self._state = State.UNDEFINED
+        self._instance_id = None
+        self.extract(event)
 
     @property
     def state(self):
         return self._state
 
-    @state.setter
-    def state(self, state):
-        self._state = state
+    @property
+    def instance_id(self):
+        return self._instance_id
 
     def extract(self, event):
         body = {}
@@ -34,7 +27,7 @@ class Request:
         if event.get('body'):
             body = self._extract_body(event)
         else:
-            self.state = State.BODY_IS_EMPTY
+            self._state = State.BODY_IS_EMPTY
 
         return body
 
@@ -43,12 +36,14 @@ class Request:
 
         try:
             body = json.loads(event.get('body'))
-            self.instance_id = body['instance_id']
+            self._instance_id = body['instance_id']
+            self._state = State.BODY_IS_VALID
         except json.decoder.JSONDecodeError:
-            self.state = State.BODY_IS_NOT_JSON
-            logger.exception(f'Invalid body: {event.get("body")}')
+            self._state = State.BODY_IS_NOT_JSON
+            logger.warning(f'Invalid body: {event.get("body")}')
         except KeyError:
-            self.state = State.BODY_HAS_NOT_INSTANCE_ID
+            self._state = State.BODY_HAS_NOT_INSTANCE_ID
+            logger.warning(f'Body has not instance_id: {event.get("body")}')
 
         return body
 
@@ -58,3 +53,4 @@ class State(Enum):
     BODY_IS_EMPTY = auto()
     BODY_IS_NOT_JSON = auto()
     BODY_HAS_NOT_INSTANCE_ID = auto()
+    BODY_IS_VALID = auto()

@@ -1,5 +1,6 @@
 import os
-from unittest import TestCase
+
+import pytest
 
 import boto3
 import requests
@@ -9,9 +10,7 @@ import requests
 """
 
 
-class TestApiGateway(TestCase):
-    api_endpoint: str
-
+class TestApiGateway():
     @classmethod
     def get_stack_name(cls) -> str:
         stack_name = os.environ.get("AWS_SAM_STACK_NAME")
@@ -23,7 +22,8 @@ class TestApiGateway(TestCase):
 
         return stack_name
 
-    def setUp(self) -> None:
+    @pytest.fixture
+    def api_endpoint(self) -> None:
         """環境変数AWS_SAM_STACK_NAMEを元にCloudFormation APIを利用してAPI GatewayのURLを取得する"""
         stack_name = TestApiGateway.get_stack_name()
 
@@ -40,10 +40,9 @@ class TestApiGateway(TestCase):
 
         stack_outputs = stacks[0]["Outputs"]
         api_outputs = [output for output in stack_outputs if output["OutputKey"] == "EC2InstanceStarterApi"]
-        self.assertTrue(api_outputs, f"Cannot find output HelloWorldApi in stack {stack_name}")
 
-        self.api_endpoint = api_outputs[0]["OutputValue"]
+        return api_outputs[0]["OutputValue"]
 
-    def test_api_gateway(self):
-        response = requests.post(self.api_endpoint)
-        self.assertDictEqual(response.json(), {"message": "OK"})
+    def test_api_gateway(self, api_endpoint):
+        response = requests.post(api_endpoint)
+        assert 'message' in response.json()

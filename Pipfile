@@ -8,6 +8,8 @@ build = "sam build"
 deploy = "sam deploy"
 test = "pytest --cov --cov-branch --cov-report=term-missing tests/unit/"
 test-integration = "pytest --cov --cov-branch --cov-report=term-missing"
+local-invoke = "sam local invoke EC2InstanceStarter --event events/event.json"
+local-start-api = "sam local start-api"
 
 [packages]
 boto3 = "~=1.19"

@@ -6,8 +6,8 @@ name = "pypi"
 [scripts]
 build = "sam build"
 deploy = "sam deploy"
-test = "pytest --cov --cov-branch tests/unit/"
-test-integration = "pytest --cov --cov-branch"
+test = "pytest --cov --cov-branch --cov-report=term-missing tests/unit/"
+test-integration = "pytest --cov --cov-branch --cov-report=term-missing"
 
 [packages]
 boto3 = "~=1.19"

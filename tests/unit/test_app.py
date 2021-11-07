@@ -7,7 +7,8 @@ import pytest
 from moto import mock_ec2
 from moto.ec2.models import AMIS
 
-from src import app
+with mock_ec2():
+    from src import app
 
 
 @mock_ec2

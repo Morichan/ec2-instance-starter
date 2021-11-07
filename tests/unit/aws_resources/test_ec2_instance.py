@@ -4,8 +4,9 @@ import pytest
 from moto import mock_ec2
 from moto.ec2.models import AMIS
 
-from src.aws_resources.ec2_instance import EC2Instance
-from src.aws_resources.ec2_instance import State
+with mock_ec2():
+    from src.aws_resources.ec2_instance import EC2Instance
+    from src.aws_resources.ec2_instance import State
 
 
 @mock_ec2

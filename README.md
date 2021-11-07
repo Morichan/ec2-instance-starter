@@ -1,5 +1,8 @@
 # EC2 Instance Starter
 
+[![CI](https://github.com/Morichan/ec2-instance-starter/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/Morichan/ec2-instance-starter/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/Morichan/ec2-instance-starter/branch/main/graph/badge.svg?token=UBIJ60LWSS)](https://codecov.io/gh/Morichan/ec2-instance-starter)
+
 本プロジェクトは、Amazon EC2インスタンスを起動するためのAPIを提供するSAMアーキテクチャです。
 
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM-CLI.

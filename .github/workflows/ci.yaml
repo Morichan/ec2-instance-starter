@@ -28,8 +28,9 @@ jobs:
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
       run: |
-        pipenv run test
+        pipenv run test-report
     - name: Send reports
       uses: codecov/codecov-action@v1
       with:
+        file: ./coverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}

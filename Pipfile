@@ -7,6 +7,7 @@ name = "pypi"
 build = "sam build"
 deploy = "sam deploy"
 test = "pytest --cov --cov-branch --cov-report=term-missing tests/unit/"
+test-report = "pytest --cov --cov-branch --cov-report=term-missing --cov-report=xml tests/unit/"
 test-integration = "pytest --cov --cov-branch --cov-report=term-missing"
 
 [packages]

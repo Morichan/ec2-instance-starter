@@ -9,6 +9,8 @@ deploy = "sam deploy"
 test = "pytest --cov --cov-branch --cov-report=term-missing tests/unit/"
 test-report = "pytest --cov --cov-branch --cov-report=term-missing --cov-report=xml tests/unit/"
 test-integration = "pytest --cov --cov-branch --cov-report=term-missing"
+convert-docs = "sphinx-apidoc -f -o docs-src/ src/"
+build-docs = "sphinx-build -b html docs-src/ docs/"
 
 [packages]
 boto3 = "~=1.19"

@@ -25,6 +25,8 @@ jobs:
         pip install pipenv
         pipenv install --dev
     - name: Build
+      env:
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
       run: |
         pipenv run convert-docs
         pipenv run build-docs

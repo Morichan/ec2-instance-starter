@@ -1,0 +1,48 @@
+name: docs
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'from builduser/docs"
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-versions: [3.8]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-versions }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-versions }}
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+        pipenv install --dev
+    - name: Build
+      run: |
+        pipenv run convert-docs
+        pipenv run build-docs
+    - name: Deploy Configuration
+      run: |
+        mkdir ~/.ssh
+        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+        chmod 400 ~/.ssh/id_rsa
+    - name: Push
+      env:
+        GITHUB_USER: "builduser"
+        GITHUB_EMAIL: "test.builduser@example.com"
+      run: |
+        git config --local user.name "${GITHUB_USER}"
+        git config --local user.email "${GITHUB_EMAIL}"
+        git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
+        git switch -c docs
+        git add docs
+        git commit -m ":memo: docs(sphinx): auto rebuilding site"
+        git push -f origin docs

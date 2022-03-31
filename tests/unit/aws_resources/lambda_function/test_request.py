@@ -23,7 +23,7 @@ class TestRequest:
         assert obj.instance_id is None
 
     def test_return_empty_if_request_body_is_whitespace(self, create_obj, create_apigw_event):
-        """リクエストボディーがNoneの場合、空辞書を返す"""
+        """リクエストボディーが空文字の場合、空辞書を返す"""
         event = create_apigw_event('')
         obj = create_obj(event)
         expected = {}

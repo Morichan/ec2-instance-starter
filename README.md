@@ -83,6 +83,10 @@ pipenv run deploy
 curl -X POST ${ENDPOINT}/start/ -H "Content-Type: application/json" -d '{"instance_id": "i-00000000000000001"}'
 ```
 
+必要なパラメーターは、以下の通りです。
+
+- instance_id: 起動対象のEC2インスタンスIDを文字列で指定します。設定がない場合は400系を返します。
+
 
 
 # How to develop

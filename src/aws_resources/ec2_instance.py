@@ -48,6 +48,8 @@ class EC2Instance:
             logger.exception(error_code)
 
     def is_already_running(self):
+        self._describe = self._describe_instance()
+
         try:
             if not self._is_unique():
                 self._state = State.INSTANCE_ID_IS_NOT_FOUND

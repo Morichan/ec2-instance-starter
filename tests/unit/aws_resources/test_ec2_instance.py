@@ -92,10 +92,14 @@ class TestEC2Instance:
         ec2.run_instances(ImageId=AMIS[0]['ami_id'], MinCount=2, MaxCount=2)
         all_instance_info = ec2.describe_instances()
         instance_id = all_instance_info['Reservations'][0]['Instances'][0]['InstanceId']
+        ec2.stop_instances(InstanceIds=[instance_id])
         obj = create_obj(instance_id)
+
+        assert obj.is_already_running() is False
 
         actual = obj.start()
 
+        assert obj.is_already_running() is True
         assert actual['ResponseMetadata']['HTTPStatusCode'] == 200
 
     def test_raise_error_if_instance_starting_is_failed(self, create_obj, mocker):

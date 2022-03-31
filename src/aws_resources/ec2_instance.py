@@ -15,9 +15,10 @@ ec2 = boto3.client('ec2')
 
 
 class EC2Instance:
-    def __init__(self, instance_id):
+    def __init__(self, instance_id, dry_run=False):
         self._state = State.UNDEFINED
         self._instance_id = instance_id
+        self._dry_run = dry_run
         self._describe = self._describe_instance()
 
     @property
@@ -27,6 +28,10 @@ class EC2Instance:
     @property
     def instance_id(self):
         return self._instance_id
+
+    @property
+    def dry_run(self):
+        return self._dry_run
 
     def _describe_instance(self):
         try:
@@ -74,18 +79,23 @@ class EC2Instance:
 
     def start(self):
         try:
-            return self._start_instance(self.instance_id)
+            return self._start_instance(self.instance_id, self.dry_run)
         except:
             logger.exception(f'Error: failed to start instance={self.instance_id}')
             self._state = State.INSTANCE_STARTING_IS_FAILED
             raise
 
-    def _start_instance(self, instance_id):
-        return ec2.start_instances(InstanceIds=[instance_id])
+    def _start_instance(self, instance_id, dry_run):
+        if dry_run:
+            self._state = State.DRY_RUN
+            return None
+        else:
+            return ec2.start_instances(InstanceIds=[instance_id])
 
 
 class State(Enum):
     UNDEFINED = auto()
+    DRY_RUN = auto()
     INSTANCE_ID_IS_NOT_STRING = auto()
     INSTANCE_ID_IS_NOT_FOUND = auto()
     INSTANCE_IS_NOT_RUNNING = auto()

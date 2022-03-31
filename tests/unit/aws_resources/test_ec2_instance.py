@@ -13,7 +13,7 @@ with mock_ec2():
 class TestEC2Instance:
     @pytest.fixture()
     def create_obj(self):
-        return lambda instance_id: EC2Instance(instance_id)
+        return lambda instance_id, dry_run=False: EC2Instance(instance_id, dry_run)
 
     def test_return_default_obj(self, create_obj):
         """初期値を返す"""
@@ -111,3 +111,18 @@ class TestEC2Instance:
             obj.start()
 
         assert obj.state == State.INSTANCE_STARTING_IS_FAILED
+
+    def test_not_start_instance_if_dry_run(self, create_obj):
+        """ドライランで実行する場合、インスタンスを起動しない"""
+        ec2 = boto3.client('ec2', region_name='ap-northeast-1')
+        ec2.run_instances(ImageId=AMIS[0]['ami_id'], MinCount=2, MaxCount=2)
+        all_instance_info = ec2.describe_instances()
+        instance_id = all_instance_info['Reservations'][0]['Instances'][0]['InstanceId']
+        ec2.stop_instances(InstanceIds=[instance_id])
+        obj = create_obj(instance_id, True)
+
+        assert obj.is_already_running() is False
+
+        actual = obj.start()
+
+        assert obj.is_already_running() is False

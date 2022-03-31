@@ -11,6 +11,7 @@ class Request:
     def __init__(self, event):
         self._state = State.UNDEFINED
         self._instance_id = None
+        self._dry_run = False
         self.extract(event)
 
     @property
@@ -20,6 +21,10 @@ class Request:
     @property
     def instance_id(self):
         return self._instance_id
+
+    @property
+    def dry_run(self):
+        return self._dry_run
 
     def extract(self, event):
         body = {}
@@ -37,6 +42,7 @@ class Request:
         try:
             body = json.loads(event.get('body'))
             self._instance_id = body['instance_id']
+            self._dry_run = body.get('dry_run', False) is True
             self._state = State.BODY_IS_VALID
         except json.decoder.JSONDecodeError:
             self._state = State.BODY_IS_NOT_JSON

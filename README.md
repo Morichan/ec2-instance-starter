@@ -80,12 +80,13 @@ pipenv run deploy
 次のコマンドを参考にしてください。
 
 ```bash
-curl -X POST ${ENDPOINT}/start/ -H "Content-Type: application/json" -d '{"instance_id": "i-00000000000000001"}'
+curl -X POST ${ENDPOINT}/start/ -H "Content-Type: application/json" -d '{"instance_id": "i-00000000000000001", "dry_run": false}'
 ```
 
 必要なパラメーターは、以下の通りです。
 
 - instance_id: 起動対象のEC2インスタンスIDを文字列で指定します。設定がない場合は400系を返します。
+- dry_run（任意）: trueの場合、EC2インスタンスを起動しませんが、起動対象のEC2インスタンスの存在については確認します。
 
 
 

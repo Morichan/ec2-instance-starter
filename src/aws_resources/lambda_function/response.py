@@ -72,6 +72,16 @@ class AcceptedState(State):
         return 'Accepted'
 
 
+class IgnoreState(State):
+    @property
+    def status_code(self):
+        return 200
+
+    @property
+    def body_message(self):
+        return 'Ignore'
+
+
 class EC2InstanceIsAlreadyRunningState(State):
     @property
     def status_code(self):

@@ -29,13 +29,13 @@ class LambdaFunction:
         elif request.state is lambda_request.State.BODY_HAS_NOT_INSTANCE_ID:
             response.state = lambda_response.BodyHasNotInstanceIdState()
         else:
-            response.state = self._analyze_state_from_ec2_instance(request.instance_id)
+            response.state = self._analyze_state_from_ec2_instance(request.instance_id, request.dry_run)
 
         return response.create_response()
 
-    def _analyze_state_from_ec2_instance(self, instance_id):
+    def _analyze_state_from_ec2_instance(self, instance_id, dry_run):
         state = lambda_response.NoneState()
-        ec2_instance = EC2Instance(instance_id)
+        ec2_instance = EC2Instance(instance_id, dry_run)
 
         if ec2_instance.is_already_running():
             state = lambda_response.EC2InstanceIsAlreadyRunningState()
@@ -46,7 +46,9 @@ class LambdaFunction:
                 state = lambda_response.EC2InstanceIdIsInvalidState()
             else:
                 result = ec2_instance.start()
-                if not result:
+                if ec2_instance.state is EC2InstanceState.DRY_RUN:
+                    state = lambda_response.IgnoreState()
+                elif not result:
                     state = lambda_response.StartedEC2InstanceIsFailedState()
                 else:
                     state = lambda_response.AcceptedState()

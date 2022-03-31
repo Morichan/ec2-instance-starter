@@ -30,6 +30,42 @@ def test_respond_ok_if_valid_instance_id_is_sent(create_apigw_event, mocker):
 
 
 @mock_ec2
+def test_respond_ok_if_valid_instance_id_and_not_dry_run_are_sent(create_apigw_event, mocker):
+    """有効なインスタンスIDかつdry_runでないことを送信する場合、OKを返す"""
+    ec2 = boto3.client('ec2', region_name='ap-northeast-1')
+    ec2.run_instances(ImageId=AMIS[0]['ami_id'], MinCount=2, MaxCount=2)
+    all_instance_info = ec2.describe_instances()
+    instance_id = all_instance_info['Reservations'][0]['Instances'][0]['InstanceId']
+    ec2.stop_instances(InstanceIds=[instance_id])
+    body_with_valid_instance_id = f'{{"instance_id": "{instance_id}", "dry_run": false}}'
+
+    ret = app.lambda_handler(create_apigw_event(body_with_valid_instance_id), '')
+    data = json.loads(ret['body'])
+
+    assert ret['statusCode'] == 202
+    assert 'message' in ret['body']
+    assert data['message'] == 'Accepted'
+
+
+@mock_ec2
+def test_respond_ok_if_valid_instance_id_and_dry_run_are_sent(create_apigw_event, mocker):
+    """有効なインスタンスIDかつdry_runであることを送信する場合、OKを返す"""
+    ec2 = boto3.client('ec2', region_name='ap-northeast-1')
+    ec2.run_instances(ImageId=AMIS[0]['ami_id'], MinCount=2, MaxCount=2)
+    all_instance_info = ec2.describe_instances()
+    instance_id = all_instance_info['Reservations'][0]['Instances'][0]['InstanceId']
+    ec2.stop_instances(InstanceIds=[instance_id])
+    body_with_valid_instance_id = f'{{"instance_id": "{instance_id}", "dry_run": true}}'
+
+    ret = app.lambda_handler(create_apigw_event(body_with_valid_instance_id), '')
+    data = json.loads(ret['body'])
+
+    assert ret['statusCode'] == 200
+    assert 'message' in ret['body']
+    assert data['message'] == 'Ignore'
+
+
+@mock_ec2
 def test_respond_error_if_instance_id_be_null_is_sent(create_apigw_event, mocker):
     """NullなインスタンスIDを送信する場合、エラーを返す"""
     body_with_invalid_instance_id = '{"instance_id": null}'
@@ -130,7 +166,7 @@ def test_respond_error_if_ec2_instance_is_had_run(create_apigw_event, mocker):
 
 @mock_ec2
 def test_respond_error_if_started_ec2_instance_is_failed(create_apigw_event, mocker):
-    """EC2インスタンスの起動に場合、エラーを返す"""
+    """EC2インスタンスの起動に失敗した場合、エラーを返す"""
     mocker.patch('src.aws_resources.lambda_function.EC2Instance.start', return_value=None)
     ec2 = boto3.client('ec2', region_name='ap-northeast-1')
     ec2.run_instances(ImageId=AMIS[0]['ami_id'], MinCount=2, MaxCount=2)

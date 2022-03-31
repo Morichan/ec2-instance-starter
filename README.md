@@ -80,8 +80,20 @@ pipenv run deploy
 次のコマンドを参考にしてください。
 
 ```bash
-curl -X POST ${ENDPOINT}/start/ -H "Content-Type: application/json" -d '{"instance_id": "i-00000000000000001"}'
+curl --version
+# version <= v7.75.0
+
+curl -X POST ${ENDPOINT}/start/ \
+  --aws-sigv4 "aws:amz:${DEPLOYED_REGION}:execute-api" \
+  --user "${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}" \
+  -H 'Content-Type: application/json' \
+  -d '{"instance_id": "i-00000000000000001", "dry_run": false}'
 ```
+
+必要なパラメーターは、以下の通りです。
+
+- instance_id: 起動対象のEC2インスタンスIDを文字列で指定します。設定がない場合は400系を返します。
+- dry_run（任意）: trueの場合、EC2インスタンスを起動しませんが、起動対象のEC2インスタンスの存在については確認します。
 
 
 

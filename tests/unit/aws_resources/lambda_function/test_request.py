@@ -23,7 +23,7 @@ class TestRequest:
         assert obj.instance_id is None
 
     def test_return_empty_if_request_body_is_whitespace(self, create_obj, create_apigw_event):
-        """リクエストボディーがNoneの場合、空辞書を返す"""
+        """リクエストボディーが空文字の場合、空辞書を返す"""
         event = create_apigw_event('')
         obj = create_obj(event)
         expected = {}
@@ -70,3 +70,28 @@ class TestRequest:
         assert actual == expected
         assert obj.state is lambda_request.State.BODY_IS_VALID
         assert obj.instance_id == expected_instance_id
+
+    def test_body_has_not_instance_id_if_request_body_has_not_instance_id_and_has_dry_run(self, create_obj, create_apigw_event):
+        """リクエストボディーがinstance_idキーを含んでおらずdry_runキーを含んでいる場合、instance_idが存在しないことを返す"""
+        event = create_apigw_event('{"dry_run": true}')
+        obj = create_obj(event)
+
+        actual = obj.extract(event)
+
+        assert obj.state is lambda_request.State.BODY_HAS_NOT_INSTANCE_ID
+        assert obj.instance_id == None
+        assert obj.dry_run is False
+
+    def test_return_dict_and_extract_instance_id_and_dry_run_if_request_body_has_instance_id_and_dry_run(self, create_obj, create_apigw_event):
+        """リクエストボディーにinstance_idキーとdry_runキーが存在する場合、取得した辞書を返しinstance_idとdry_runを抽出する"""
+        expected_instance_id = 'i-00000000000000001'
+        event = create_apigw_event('{"instance_id": "i-00000000000000001", "dry_run": true}')
+        obj = create_obj(event)
+        expected = {'instance_id': expected_instance_id, 'dry_run': True}
+
+        actual = obj.extract(event)
+
+        assert actual == expected
+        assert obj.state is lambda_request.State.BODY_IS_VALID
+        assert obj.instance_id == expected_instance_id
+        assert obj.dry_run is True

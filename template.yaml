@@ -8,6 +8,13 @@ Globals:
     Timeout: 3
 
 Resources:
+  EC2InstanceStarterApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: v1
+      Auth:
+        DefaultAuthorizer: AWS_IAM
+
   EC2InstanceStarter:
     Type: AWS::Serverless::Function
     Properties:
@@ -20,6 +27,7 @@ Resources:
         StartEC2Instance:
           Type: Api
           Properties:
+            RestApiId: !Ref EC2InstanceStarterApi
             Path: /start
             Method: post
       Policies:
@@ -39,7 +47,7 @@ Resources:
 Outputs:
   EC2InstanceStarterApi:
     Description: "API Gateway endpoint URL for Prod stage for EC2 Instance Starter function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/start/"
+    Value: !Sub "https://${EC2InstanceStarterApi}.execute-api.${AWS::Region}.amazonaws.com/v1/start/"
   EC2InstanceStarterIamRoleArn:
     Description: "Implicit IAM Role created for EC2 Instance Starter function"
     Value: !GetAtt EC2InstanceStarterRole.Arn

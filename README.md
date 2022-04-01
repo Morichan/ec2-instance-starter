@@ -80,13 +80,9 @@ pipenv run deploy
 次のコマンドを参考にしてください。
 
 ```bash
-curl --version
-# version <= v7.75.0
-
 curl -X POST ${ENDPOINT}/start/ \
-  --aws-sigv4 "aws:amz:${DEPLOYED_REGION}:execute-api" \
-  --user "${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}" \
   -H 'Content-Type: application/json' \
+  -H "Authorization: Basic $(echo -n "${AWS_USER_NAME}:${AWS_ACCESS_KEY_ID}" | base64)" \
   -d '{"instance_id": "i-00000000000000001", "dry_run": false}'
 ```
 

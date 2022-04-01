@@ -13,7 +13,25 @@ Resources:
     Properties:
       StageName: v1
       Auth:
-        DefaultAuthorizer: AWS_IAM
+        DefaultAuthorizer: LambdaAuthorization
+        Authorizers:
+          LambdaAuthorization:
+            FunctionArn: !GetAtt Authorizer.Arn
+
+  Authorizer:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: auth.lambda_handler
+      Runtime: python3.8
+      Policies:
+        - Statement:
+          - Sid: DescribeIAMUserAccessKeys
+            Effect: Allow
+            Action:
+              - iam:ListUsers
+              - iam:ListAccessKeys
+            Resource: "*"
 
   EC2InstanceStarter:
     Type: AWS::Serverless::Function

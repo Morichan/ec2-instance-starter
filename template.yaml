@@ -17,6 +17,8 @@ Resources:
         Authorizers:
           LambdaAuthorization:
             FunctionArn: !GetAtt Authorizer.Arn
+            Identity:
+              ReauthorizeEvery: 0
 
   Authorizer:
     Type: AWS::Serverless::Function

@@ -25,7 +25,7 @@ Resources:
     Properties:
       CodeUri: src/
       Handler: auth.lambda_handler
-      Runtime: python3.8
+      Runtime: python3.9
       Policies:
         - Statement:
           - Sid: DescribeIAMUserAccessKeys
@@ -40,7 +40,7 @@ Resources:
     Properties:
       CodeUri: src/
       Handler: app.lambda_handler
-      Runtime: python3.8
+      Runtime: python3.9
       Architectures:
         - x86_64
       Events:

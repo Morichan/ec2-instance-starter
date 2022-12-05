@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import boto3
 import pytest
 from moto import mock_ec2
-from moto.ec2.models import AMIS
+from moto.ec2.models.amis import AMIS
 
 with mock_ec2():
     from src import app

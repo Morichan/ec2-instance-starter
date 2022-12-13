@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-import src.aws_resources.lambda_function.request as lambda_request
+import aws_resources.lambda_function.request as lambda_request
 
 
 class TestRequest:

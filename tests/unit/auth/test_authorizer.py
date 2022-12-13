@@ -6,7 +6,7 @@ import pytest
 from moto import mock_iam
 
 with mock_iam():
-    from src.auth.authorizer import Authorizer
+    from auth.authorizer import Authorizer
 
 
 @mock_iam
@@ -42,7 +42,7 @@ class TestAuthorizer:
 
     def test_is_not_authorized_if_is_not_authenticated(self, create_obj, mocker):
         """認証しない場合は認可しない"""
-        mocker.patch('src.auth.authorizer.Authorizer.authenticate', return_value=False)
+        mocker.patch('auth.authorizer.Authorizer.authenticate', return_value=False)
         obj = create_obj({'authorizationToken': None, 'methodArn': None})
 
         actual = obj.authorize()
@@ -51,7 +51,7 @@ class TestAuthorizer:
 
     def test_is_authorized_if_is_authenticated(self, create_obj, mocker):
         """認証する場合は認可する"""
-        mocker.patch('src.auth.authorizer.Authorizer.authenticate', return_value=True)
+        mocker.patch('auth.authorizer.Authorizer.authenticate', return_value=True)
         obj = create_obj({'authorizationToken': None, 'methodArn': None})
 
         actual = obj.authorize()

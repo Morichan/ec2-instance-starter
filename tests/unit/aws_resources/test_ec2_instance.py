@@ -5,8 +5,8 @@ from moto import mock_ec2
 from moto.ec2.models.amis import AMIS
 
 with mock_ec2():
-    from src.aws_resources.ec2_instance import EC2Instance
-    from src.aws_resources.ec2_instance import State
+    from aws_resources.ec2_instance import EC2Instance
+    from aws_resources.ec2_instance import State
 
 
 @mock_ec2
@@ -50,7 +50,7 @@ class TestEC2Instance:
 
     def test_instance_id_is_not_found_if_instance_id_is_not_unique(self, create_obj, mocker):
         """インスタンスIDが一意に定まらない場合、instance_idを持つインスタンスは見つからない"""
-        mocker.patch('src.aws_resources.ec2_instance.EC2Instance._is_unique', return_value=False)
+        mocker.patch('aws_resources.ec2_instance.EC2Instance._is_unique', return_value=False)
         obj = create_obj('')
 
         actual = obj.is_already_running()
@@ -104,7 +104,7 @@ class TestEC2Instance:
 
     def test_raise_error_if_instance_starting_is_failed(self, create_obj, mocker):
         """インスタンスの起動に失敗した場合、例外を投げる"""
-        mocker.patch('src.aws_resources.ec2_instance.EC2Instance._start_instance', side_effect=Exception())
+        mocker.patch('aws_resources.ec2_instance.EC2Instance._start_instance', side_effect=Exception())
         obj = create_obj(None)
 
         with pytest.raises(Exception):

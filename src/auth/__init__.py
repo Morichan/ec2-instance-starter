@@ -1,9 +1,4 @@
-try:
-    # AWS Lambda用
-    from auth.authorizer import Authorizer
-except ModuleNotFoundError:
-    # ローカルテスト用
-    from src.auth.authorizer import Authorizer
+from auth.authorizer import Authorizer
 
 
 def lambda_handler(event, context):

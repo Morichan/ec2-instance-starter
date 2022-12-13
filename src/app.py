@@ -1,9 +1,4 @@
-try:
-    # AWS Lambda用
-    from aws_resources.lambda_function import LambdaFunction
-except ModuleNotFoundError:
-    # ローカルテスト用
-    from src.aws_resources.lambda_function import LambdaFunction
+from aws_resources.lambda_function import LambdaFunction
 
 
 def lambda_handler(event, context):

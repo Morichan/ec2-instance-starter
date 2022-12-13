@@ -49,7 +49,7 @@ class EC2Instance:
 
         if error_code == 'InvalidInstanceID.NotFound':
             return State.INSTANCE_ID_IS_NOT_FOUND
-        else:
+        else:  # pragma: no cover
             logger.exception(error_code)
 
     def is_already_running(self):

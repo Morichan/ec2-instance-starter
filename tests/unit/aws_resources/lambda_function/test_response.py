@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-import src.aws_resources.lambda_function.response as lambda_response
+import aws_resources.lambda_function.response as lambda_response
 
 
 @pytest.fixture()

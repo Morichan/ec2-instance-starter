@@ -8,7 +8,7 @@ from moto import mock_ec2
 from moto.ec2.models.amis import AMIS
 
 with mock_ec2():
-    from src import app
+    import app
 
 
 @mock_ec2
@@ -167,7 +167,7 @@ def test_respond_error_if_ec2_instance_is_had_run(create_apigw_event, mocker):
 @mock_ec2
 def test_respond_error_if_started_ec2_instance_is_failed(create_apigw_event, mocker):
     """EC2インスタンスの起動に失敗した場合、エラーを返す"""
-    mocker.patch('src.aws_resources.lambda_function.EC2Instance.start', return_value=None)
+    mocker.patch('aws_resources.lambda_function.EC2Instance.start', return_value=None)
     ec2 = boto3.client('ec2', region_name='ap-northeast-1')
     ec2.run_instances(ImageId=AMIS[0]['ami_id'], MinCount=2, MaxCount=2)
     all_instance_info = ec2.describe_instances()

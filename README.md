@@ -36,7 +36,7 @@ To deploy use SAM-CLI (with AWS-CLI, and Docker if test was local) and pipenv (w
 To build and deploy this application for the first time, run the following in your shell:
 
 ```bash
-pipenv lock --no-header --requirements > src/requirements.txt
+pipenv requirements > src/requirements.txt
 pipenv run build
 pipenv run deploy --guided
 ```

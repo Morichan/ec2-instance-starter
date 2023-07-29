@@ -5,6 +5,7 @@ import pytest
 
 
 sys.path.append(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + "/../../src/"))
+os.environ['AWS_DEFAULT_REGION'] = 'ap-northeast-1'
 
 
 @pytest.fixture()

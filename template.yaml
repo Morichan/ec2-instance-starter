@@ -3,6 +3,14 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   EC2 Instance Starter
 
+Parameters:
+  IsSkippedAuthorizer:
+    Type: String
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'false'
+
 Globals:
   Function:
     Timeout: 3
@@ -26,6 +34,9 @@ Resources:
       CodeUri: src/
       Handler: auth.lambda_handler
       Runtime: python3.9
+      Environment:
+        Variables:
+          IS_SKIPPED: !Ref IsSkippedAuthorizer
       Policies:
         - Statement:
           - Sid: DescribeIAMUserAccessKeys

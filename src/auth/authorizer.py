@@ -1,4 +1,5 @@
 import base64
+import os
 
 import boto3
 
@@ -9,6 +10,7 @@ iam = boto3.client('iam')
 class Authorizer:
     def __init__(self, event):
         self._event = event
+        self._is_skipped = os.getenv('IS_SKIPPED') == 'true'
 
     def authorize(self):
         token = self._event['authorizationToken']
@@ -31,6 +33,9 @@ class Authorizer:
         }
 
     def authenticate(self, token):
+        if self._is_skipped:
+            return True
+
         binary_token = token.encode('utf-8')
         users = iam.list_users().get('Users', [])
         user_names = [user.get('UserName') for user in users if user.get('UserName') is not None]

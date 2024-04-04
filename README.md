@@ -53,6 +53,9 @@ The third command will package and deploy this application to AWS, with a series
     - アカウントおよびリージョン内で一意な名前を設定する必要がありますが、難しく考える必要はありません。
 - **AWS Region**:
     - CloudFormationスタックのデプロイ先リージョン名です。
+- **Parameter IsSkippedAuthorizer**:
+    - 認証認可処理をスキップする場合は真を表す真偽値設定です。
+    - スキップしたい場合は `true` を入力してください（デフォルト値は `false` です）。
 - **Confirm changes before deploy**:
     - yesの場合、チェンジセット（CloudFormationスタックの差分一覧）を確認してからデプロイします。
     - noの場合、 `pipenv run deploy` ごとに確認する手間を省けます（が、差分が確認できないため思わぬリソースを作成してしまうかもしれません）。

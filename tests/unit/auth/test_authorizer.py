@@ -134,3 +134,12 @@ class TestAuthorizer:
 
         assert actual_token1 is True
         assert actual_token2 is True
+
+    def test_is_authenticated_if_is_skipped(self, create_obj, mocker):
+        """スキップ設定が有効化の場合は認証する"""
+        mocker.patch.dict('os.environ', {'IS_SKIPPED': 'true'})
+        obj = create_obj(None)
+
+        actual = obj.authenticate(None)
+
+        assert actual is True

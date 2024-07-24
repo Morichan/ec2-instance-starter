@@ -1,0 +1,21 @@
+src.auth package
+================
+
+Submodules
+----------
+
+src.auth.authorizer module
+--------------------------
+
+.. automodule:: src.auth.authorizer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: src.auth
+   :members:
+   :undoc-members:
+   :show-inheritance:

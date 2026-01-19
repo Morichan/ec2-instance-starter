@@ -28,4 +28,4 @@ pyopenssl = "~=23.2.0"
 aws-sam-cli = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.14"

@@ -9,7 +9,6 @@ with mock_iam():
     from auth.authorizer import Authorizer
 
 
-@mock_iam
 class TestAuthorizer:
     @pytest.fixture(scope='function', autouse=True)
     def setup(self):
@@ -21,8 +20,12 @@ class TestAuthorizer:
 
             yield
 
+            # クリーンアップ: アクセスキーを削除してからユーザーを削除
             for user in self.iam.list_users().get('Users', []):
-                self.iam.delete_user(UserName=user.get('UserName'))
+                user_name = user.get('UserName')
+                for key in self.iam.list_access_keys(UserName=user_name).get('AccessKeyMetadata', []):
+                    self.iam.delete_access_key(UserName=user_name, AccessKeyId=key.get('AccessKeyId'))
+                self.iam.delete_user(UserName=user_name)
 
     @pytest.fixture()
     def create_obj(self):

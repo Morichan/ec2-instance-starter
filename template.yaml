@@ -10,6 +10,12 @@ Parameters:
       - 'true'
       - 'false'
     Default: 'false'
+  LambdaArchitecture:
+    Type: String
+    AllowedValues:
+      - x86_64
+      - arm64
+    Default: x86_64
 
 Globals:
   Function:
@@ -34,6 +40,8 @@ Resources:
       CodeUri: src/
       Handler: auth.lambda_handler
       Runtime: python3.9
+      Architectures:
+        - !Ref LambdaArchitecture
       Environment:
         Variables:
           IS_SKIPPED: !Ref IsSkippedAuthorizer
@@ -53,7 +61,7 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.9
       Architectures:
-        - x86_64
+        - !Ref LambdaArchitecture
       Events:
         StartEC2Instance:
           Type: Api

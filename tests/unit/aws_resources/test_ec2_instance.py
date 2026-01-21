@@ -1,15 +1,15 @@
 import boto3
 from botocore.exceptions import ClientError
 import pytest
-from moto import mock_ec2
+from moto import mock_aws
 from moto.ec2.models.amis import AMIS
 
-with mock_ec2():
+with mock_aws():
     from aws_resources.ec2_instance import EC2Instance
     from aws_resources.ec2_instance import State
 
 
-@mock_ec2
+@mock_aws
 class TestEC2Instance:
     @pytest.fixture()
     def create_obj(self):

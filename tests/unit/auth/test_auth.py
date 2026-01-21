@@ -1,13 +1,13 @@
 import json
 
 import boto3
-from moto import mock_iam
+from moto import mock_aws
 
-with mock_iam():
+with mock_aws():
     import auth
 
 
-@mock_iam
+@mock_aws
 def test_allow_if_valid_auth_info_is_sent(create_apigw_event, mocker):
     """有効な認証情報を送信する場合、認可する"""
     mocker.patch('auth.authorizer.Authorizer.authenticate', return_value=True)
@@ -19,7 +19,7 @@ def test_allow_if_valid_auth_info_is_sent(create_apigw_event, mocker):
     assert response['policyDocument']['Statement'][0]['Effect'] == 'Allow'
 
 
-@mock_iam
+@mock_aws
 def test_deny_if_invalid_auth_info_is_sent(create_apigw_event, mocker):
     """無効な認証情報を送信する場合、認可しない"""
     mocker.patch('auth.authorizer.Authorizer.authenticate', return_value=False)

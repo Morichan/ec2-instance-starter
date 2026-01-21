@@ -3,16 +3,16 @@ import base64
 import boto3
 from botocore.exceptions import ClientError
 import pytest
-from moto import mock_iam
+from moto import mock_aws
 
-with mock_iam():
+with mock_aws():
     from auth.authorizer import Authorizer
 
 
 class TestAuthorizer:
     @pytest.fixture(scope='function', autouse=True)
     def setup(self):
-        with mock_iam():
+        with mock_aws():
             self.iam = boto3.client('iam')
             user_name = 'valid_user'
             self.iam.create_user(UserName=user_name)

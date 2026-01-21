@@ -4,14 +4,14 @@ from unittest.mock import MagicMock
 
 import boto3
 import pytest
-from moto import mock_ec2
+from moto import mock_aws
 from moto.ec2.models.amis import AMIS
 
-with mock_ec2():
+with mock_aws():
     import app
 
 
-@mock_ec2
+@mock_aws
 def test_respond_ok_if_valid_instance_id_is_sent(create_apigw_event, mocker):
     """有効なインスタンスIDを送信する場合、OKを返す"""
     ec2 = boto3.client('ec2', region_name='ap-northeast-1')
@@ -29,7 +29,7 @@ def test_respond_ok_if_valid_instance_id_is_sent(create_apigw_event, mocker):
     assert data['message'] == 'Accepted'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_ok_if_valid_instance_id_and_not_dry_run_are_sent(create_apigw_event, mocker):
     """有効なインスタンスIDかつdry_runでないことを送信する場合、OKを返す"""
     ec2 = boto3.client('ec2', region_name='ap-northeast-1')
@@ -47,7 +47,7 @@ def test_respond_ok_if_valid_instance_id_and_not_dry_run_are_sent(create_apigw_e
     assert data['message'] == 'Accepted'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_ok_if_valid_instance_id_and_dry_run_are_sent(create_apigw_event, mocker):
     """有効なインスタンスIDかつdry_runであることを送信する場合、OKを返す"""
     ec2 = boto3.client('ec2', region_name='ap-northeast-1')
@@ -65,7 +65,7 @@ def test_respond_ok_if_valid_instance_id_and_dry_run_are_sent(create_apigw_event
     assert data['message'] == 'Ignore'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_error_if_instance_id_be_null_is_sent(create_apigw_event, mocker):
     """NullなインスタンスIDを送信する場合、エラーを返す"""
     body_with_invalid_instance_id = '{"instance_id": null}'
@@ -77,7 +77,7 @@ def test_respond_error_if_instance_id_be_null_is_sent(create_apigw_event, mocker
     assert data['message'] == 'Error: instance_id is invalid.'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_error_if_invalid_instance_id_is_sent(create_apigw_event, mocker):
     """無効なインスタンスIDを送信する場合、エラーを返す"""
     body_with_invalid_instance_id = '{"instance_id": "i-00000000000000000"}'
@@ -89,7 +89,7 @@ def test_respond_error_if_invalid_instance_id_is_sent(create_apigw_event, mocker
     assert data['message'] == 'Error: instance_id is invalid.'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_error_if_instance_id_is_not_found(create_apigw_event, mocker):
     """存在しないインスタンスIDを送信する場合、エラーを返す"""
     body_with_not_found_instance_id = '{"instance_id": "i-00000000000000001"}'
@@ -101,7 +101,7 @@ def test_respond_error_if_instance_id_is_not_found(create_apigw_event, mocker):
     assert data['message'] == 'Error: instance_id is invalid.'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_error_if_body_without_instance_id(create_apigw_event, mocker):
     """インスタンスID無しのbodyを送信する場合、エラーを返す"""
     body_without_instance_id = '{"data": "is not instance_id"}'
@@ -113,7 +113,7 @@ def test_respond_error_if_body_without_instance_id(create_apigw_event, mocker):
     assert data['message'] == 'Error: body has not instance_id.'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_error_if_body_is_invalid_json(create_apigw_event, mocker):
     """JSON形式でないbodyを送信する場合、エラーを返す"""
     not_json_body = 'This is not JSON string.'
@@ -125,7 +125,7 @@ def test_respond_error_if_body_is_invalid_json(create_apigw_event, mocker):
     assert data['message'] == 'Error: body is not JSON format.'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_error_if_body_is_whitespace(create_apigw_event, mocker):
     """空文字bodyを送信する場合、エラーを返す"""
     ret = app.lambda_handler(create_apigw_event(''), '')
@@ -136,7 +136,7 @@ def test_respond_error_if_body_is_whitespace(create_apigw_event, mocker):
     assert data['message'] == 'Error: body is empty.'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_error_if_body_is_not_found(create_apigw_event, mocker):
     """body無しで送信する場合、エラーを返す"""
     ret = app.lambda_handler(create_apigw_event(None), '')
@@ -147,7 +147,7 @@ def test_respond_error_if_body_is_not_found(create_apigw_event, mocker):
     assert data['message'] == 'Error: body is empty.'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_error_if_ec2_instance_is_had_run(create_apigw_event, mocker):
     """既にEC2インスタンスが起動している場合、エラーを返す"""
     ec2 = boto3.client('ec2', region_name='ap-northeast-1')
@@ -164,7 +164,7 @@ def test_respond_error_if_ec2_instance_is_had_run(create_apigw_event, mocker):
     assert data['message'] == 'Error: EC2 instance is had run.'
 
 
-@mock_ec2
+@mock_aws
 def test_respond_error_if_started_ec2_instance_is_failed(create_apigw_event, mocker):
     """EC2インスタンスの起動に失敗した場合、エラーを返す"""
     mocker.patch('aws_resources.lambda_function.EC2Instance.start', return_value=None)

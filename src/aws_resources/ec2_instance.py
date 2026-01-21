@@ -11,14 +11,13 @@ from botocore.exceptions import (
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-ec2 = boto3.client('ec2')
-
 
 class EC2Instance:
     def __init__(self, instance_id, dry_run=False):
         self._state = State.UNDEFINED
         self._instance_id = instance_id
         self._dry_run = dry_run
+        self._ec2 = boto3.client('ec2')
         self._describe = self._describe_instance()
 
     @property
@@ -35,7 +34,7 @@ class EC2Instance:
 
     def _describe_instance(self):
         try:
-            return ec2.describe_instances(InstanceIds=[self.instance_id])
+            return self._ec2.describe_instances(InstanceIds=[self.instance_id])
         except ParamValidationError:
             logger.warning(f'Warning: instance_id={self.instance_id} is not string.')
             self._state = State.INSTANCE_ID_IS_NOT_STRING
@@ -90,7 +89,7 @@ class EC2Instance:
             self._state = State.DRY_RUN
             return None
         else:
-            return ec2.start_instances(InstanceIds=[instance_id])
+            return self._ec2.start_instances(InstanceIds=[instance_id])
 
 
 class State(Enum):

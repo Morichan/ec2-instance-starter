@@ -17,15 +17,16 @@ boto3 = "~=1.19"
 
 [dev-packages]
 boto3 = "~=1.26"
-pytest = "~=7.2.0"
-pytest-mock = "~=3.10.0"
-requests = "~=2.32.4"
+pyyaml = ">=6.0.3"
+pytest = ">=9.0"
+pytest-mock = ">=3.14"
+requests = "~=2.32.5"
 pytest-cov = "~=4.0.0"
 moto = "~=4.0.0"
 sphinx = "*"
 sphinx-rtd-theme = "*"
-pyopenssl = "~=23.2.0"
-aws-sam-cli = "*"
+pyopenssl = "~=25.3.0"
+aws-sam-cli = "~=1.151.0"
 
 [requires]
-python_version = "3.9"
+python_version = "3.14"

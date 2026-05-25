@@ -26,7 +26,7 @@ moto = "~=5.1.0"
 sphinx = "*"
 sphinx-rtd-theme = "*"
 pyopenssl = "~=25.3.0"
-aws-sam-cli = "~=1.151.0"
+aws-sam-cli = "~=1.161.0"
 
 [requires]
 python_version = "3.14"

@@ -43,7 +43,10 @@ class LambdaFunction:
         if ec2_instance.state is EC2InstanceState.INSTANCE_ID_IS_NOT_FOUND:
             return lambda_response.EC2InstanceIdIsInvalidState()
 
-        result = ec2_instance.start()
+        try:
+            result = ec2_instance.start()
+        except Exception:
+            return lambda_response.StartedEC2InstanceIsFailedState()
 
         if ec2_instance.state is EC2InstanceState.DRY_RUN:
             return lambda_response.IgnoreState()

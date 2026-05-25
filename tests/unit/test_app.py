@@ -166,6 +166,25 @@ def test_respond_error_if_ec2_instance_is_had_run(create_apigw_event, mocker):
 
 @mock_aws
 def test_respond_error_if_started_ec2_instance_is_failed(create_apigw_event, mocker):
+    """EC2インスタンスの起動時にエラーが発生した場合、エラーを返す"""
+    mocker.patch('aws_resources.ec2_instance.EC2Instance._start_instance', side_effect=Exception('start failed'))
+    ec2 = boto3.client('ec2', region_name='ap-northeast-1')
+    ec2.run_instances(ImageId=AMIS[0]['ami_id'], MinCount=2, MaxCount=2)
+    all_instance_info = ec2.describe_instances()
+    instance_id = all_instance_info['Reservations'][0]['Instances'][0]['InstanceId']
+    ec2.stop_instances(InstanceIds=[instance_id])
+    body_with_valid_instance_id = f'{{"instance_id": "{instance_id}"}}'
+
+    ret = app.lambda_handler(create_apigw_event(body_with_valid_instance_id), '')
+    data = json.loads(ret['body'])
+
+    assert ret['statusCode'] == 500
+    assert 'message' in ret['body']
+    assert data['message'] == 'Error: EC2 instance was started but failed.'
+
+
+@mock_aws
+def test_respond_error_if_started_ec2_instance_return_null(create_apigw_event, mocker):
     """EC2インスタンスの起動に失敗した場合、エラーを返す"""
     mocker.patch('aws_resources.lambda_function.EC2Instance.start', return_value=None)
     ec2 = boto3.client('ec2', region_name='ap-northeast-1')

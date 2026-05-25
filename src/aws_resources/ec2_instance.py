@@ -79,6 +79,15 @@ class EC2Instance:
     def start(self):
         try:
             return self._start_instance(self.instance_id, self.dry_run)
+        except ClientError as e:
+            error_code = e.response['Error']['Code']
+            if error_code == 'InsufficientInstanceCapacity':
+                logger.warning(f'Warning: insufficient capacity for instance={self.instance_id}')
+                self._state = State.INSUFFICIENT_CAPACITY
+                raise
+            logger.exception(f'Error: failed to start instance={self.instance_id}')
+            self._state = State.INSTANCE_STARTING_IS_FAILED
+            raise
         except:
             logger.exception(f'Error: failed to start instance={self.instance_id}')
             self._state = State.INSTANCE_STARTING_IS_FAILED
@@ -99,4 +108,5 @@ class State(Enum):
     INSTANCE_ID_IS_NOT_FOUND = auto()
     INSTANCE_IS_NOT_RUNNING = auto()
     INSTANCE_IS_RUNNING = auto()
+    INSUFFICIENT_CAPACITY = auto()
     INSTANCE_STARTING_IS_FAILED = auto()

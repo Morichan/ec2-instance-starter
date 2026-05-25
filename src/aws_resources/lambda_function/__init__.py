@@ -1,6 +1,8 @@
 import json
 import logging
 
+from botocore.exceptions import ClientError
+
 from . import request as lambda_request
 from . import response as lambda_response
 from ..ec2_instance import EC2Instance
@@ -45,6 +47,11 @@ class LambdaFunction:
 
         try:
             result = ec2_instance.start()
+        except ClientError as e:
+            error_code = e.response['Error']['Code']
+            if error_code == 'InsufficientInstanceCapacity':
+                return lambda_response.InsufficientCapacityState()
+            return lambda_response.StartedEC2InstanceIsFailedState()
         except Exception:
             return lambda_response.StartedEC2InstanceIsFailedState()
 

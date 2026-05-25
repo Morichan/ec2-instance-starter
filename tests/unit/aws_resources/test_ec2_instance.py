@@ -102,8 +102,36 @@ class TestEC2Instance:
         assert obj.is_already_running() is True
         assert actual['ResponseMetadata']['HTTPStatusCode'] == 200
 
+    def test_return_none_and_set_insufficient_capacity_state_if_capacity_is_insufficient(self, create_obj, mocker):
+        """キャパシティ不足の場合、例外を投げる"""
+        insufficient_capacity_error = ClientError(
+            {'Error': {'Code': 'InsufficientInstanceCapacity', 'Message': 'Insufficient capacity.'}},
+            'StartInstances',
+        )
+        mocker.patch('aws_resources.ec2_instance.EC2Instance._start_instance', side_effect=insufficient_capacity_error)
+        obj = create_obj(None)
+
+        with pytest.raises(ClientError):
+            obj.start()
+
+        assert obj.state == State.INSUFFICIENT_CAPACITY
+
+    def test_raise_client_error_and_set_failed_state_if_unexpected_client_error_occurs(self, create_obj, mocker):
+        """InsufficientInstanceCapacity以外のClientErrorが発生した場合、例外を投げる"""
+        unexpected_client_error = ClientError(
+            {'Error': {'Code': 'Other', 'Message': 'Other error.'}},
+            'StartInstances',
+        )
+        mocker.patch('aws_resources.ec2_instance.EC2Instance._start_instance', side_effect=unexpected_client_error)
+        obj = create_obj(None)
+
+        with pytest.raises(ClientError):
+            obj.start()
+
+        assert obj.state == State.INSTANCE_STARTING_IS_FAILED
+
     def test_raise_error_if_instance_starting_is_failed(self, create_obj, mocker):
-        """インスタンスの起動に失敗した場合、例外を投げる"""
+        """インスタンスの起動時にClientError以外のエラーが発生した場合、例外を投げる"""
         mocker.patch('aws_resources.ec2_instance.EC2Instance._start_instance', side_effect=Exception())
         obj = create_obj(None)
 

@@ -132,6 +132,16 @@ class BodyIsEmptyState(State):
         return 'Error: body is empty.'
 
 
+class InsufficientCapacityState(State):
+    @property
+    def status_code(self):
+        return 503
+
+    @property
+    def body_message(self):
+        return 'Error: EC2 insufficient capacity. Please try again later.'
+
+
 class StartedEC2InstanceIsFailedState(State):
     @property
     def status_code(self):

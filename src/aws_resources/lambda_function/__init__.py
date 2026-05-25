@@ -34,23 +34,20 @@ class LambdaFunction:
         return response.create_response()
 
     def _analyze_state_from_ec2_instance(self, instance_id, dry_run):
-        state = lambda_response.NoneState()
         ec2_instance = EC2Instance(instance_id, dry_run)
 
         if ec2_instance.is_already_running():
-            state = lambda_response.EC2InstanceIsAlreadyRunningState()
-        else:
-            if ec2_instance.state is EC2InstanceState.INSTANCE_ID_IS_NOT_STRING:
-                state = lambda_response.EC2InstanceIdIsInvalidState()
-            elif ec2_instance.state is EC2InstanceState.INSTANCE_ID_IS_NOT_FOUND:
-                state = lambda_response.EC2InstanceIdIsInvalidState()
-            else:
-                result = ec2_instance.start()
-                if ec2_instance.state is EC2InstanceState.DRY_RUN:
-                    state = lambda_response.IgnoreState()
-                elif not result:
-                    state = lambda_response.StartedEC2InstanceIsFailedState()
-                else:
-                    state = lambda_response.AcceptedState()
+            return lambda_response.EC2InstanceIsAlreadyRunningState()
+        if ec2_instance.state is EC2InstanceState.INSTANCE_ID_IS_NOT_STRING:
+            return lambda_response.EC2InstanceIdIsInvalidState()
+        if ec2_instance.state is EC2InstanceState.INSTANCE_ID_IS_NOT_FOUND:
+            return lambda_response.EC2InstanceIdIsInvalidState()
 
-        return state
+        result = ec2_instance.start()
+
+        if ec2_instance.state is EC2InstanceState.DRY_RUN:
+            return lambda_response.IgnoreState()
+        if not result:
+            return lambda_response.StartedEC2InstanceIsFailedState()
+
+        return lambda_response.AcceptedState()

@@ -63,6 +63,7 @@ Resources:
       Runtime: python3.14
       Architectures:
         - !Ref LambdaArchitecture
+      MemorySize: 256
       Events:
         StartEC2Instance:
           Type: Api

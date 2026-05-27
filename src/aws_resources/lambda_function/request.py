@@ -8,7 +8,24 @@ logger.setLevel(logging.INFO)
 
 
 class Request:
+    """Lambda関数のリクエストイベントを解析するクラス。
+
+    API Gatewayから受取ったイベントを解析し、インスタンスIDやドライランフラグを取出す。
+
+    Attributes:
+        state (State): リクエストの現在の状態。
+        instance_id (str): EC2インスタンスID。
+        dry_run (bool): ドライランモードの場合は真を表す真偽値。
+
+    """
+
     def __init__(self, event):
+        """Requestを初期化する。
+
+        Args:
+            event (dict): API Gatewayから受取ったイベント。
+
+        """
         self._state = State.UNDEFINED
         self._instance_id = None
         self._dry_run = False
@@ -16,17 +33,34 @@ class Request:
 
     @property
     def state(self):
+        """リクエストの現在の状態。
+
+        リクエストの現在の状態を表す。
+        本クラスの各種メソッドを呼出すタイミングによって自動的に変化する。
+
+        """
         return self._state
 
     @property
     def instance_id(self):
+        """EC2インスタンスID。"""
         return self._instance_id
 
     @property
     def dry_run(self):
+        """ドライランモードの場合は真を表す真偽値。"""
         return self._dry_run
 
     def extract(self, event):
+        """イベントからボディを取出す。
+
+        Args:
+            event (dict): API Gatewayから受取ったイベント。
+
+        Returns:
+            dict: 取出したボディ。ボディが空の場合は空のdict。
+
+        """
         body = {}
 
         if event.get('body'):
@@ -55,6 +89,16 @@ class Request:
 
 
 class State(Enum):
+    """リクエストの状態を表す列挙子。
+
+    Attributes:
+        UNDEFINED: 初期状態。
+        BODY_IS_EMPTY: ボディが空の状態。
+        BODY_IS_NOT_JSON: ボディがJSON形式でない状態。
+        BODY_HAS_NOT_INSTANCE_ID: ボディにinstance_idが含まれない状態。
+        BODY_IS_VALID: ボディが正常に解析できた状態。
+
+    """
     UNDEFINED = auto()
     BODY_IS_EMPTY = auto()
     BODY_IS_NOT_JSON = auto()

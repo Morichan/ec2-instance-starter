@@ -14,13 +14,32 @@ logger.setLevel(logging.INFO)
 
 
 class LambdaFunction:
+    """Lambda関数のイベント処理とレスポンス生成を管理するクラス。
+
+    API Gatewayから受取ったイベントを解析し、実行結果をレスポンスとして返す。
+
+    """
+
     def __init__(self, event, context):
+        """初期化する。
+
+        Args:
+            event (dict): API Gatewayから受取ったイベント。
+            context (dict): Lambda実行コンテキスト。
+
+        """
         self._event = event
         self._context = context
 
         logger.info(f'{json.dumps(self._event)}')
 
     def create_response(self):
+        """イベントを解析してレスポンスを生成する。
+
+        Returns:
+            dict: HTTPステータスコードとボディを含むレスポンス。
+
+        """
         request = lambda_request.Request(self._event)
         response = lambda_response.Response()
 

@@ -18,16 +18,13 @@ class LambdaFunction:
 
     API Gatewayから受取ったイベントを解析し、実行結果をレスポンスとして返す。
 
+    Args:
+        event (dict): API Gatewayから受取ったイベント。
+        context (dict): Lambda実行コンテキスト。
+
     """
 
     def __init__(self, event, context):
-        """初期化する。
-
-        Args:
-            event (dict): API Gatewayから受取ったイベント。
-            context (dict): Lambda実行コンテキスト。
-
-        """
         self._event = event
         self._context = context
 

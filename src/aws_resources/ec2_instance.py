@@ -17,21 +17,13 @@ class EC2Instance:
 
     boto3を使用してEC2インスタンスの状態確認・起動を行う。
 
-    Attributes:
-        state (State): インスタンスの現在の状態。
+    Args:
         instance_id (str): 対象のEC2インスタンスID。
-        dry_run (bool): ドライランモードの場合は真を表す真偽値。
+        dry_run (bool, optional): Trueの場合は実際の起動を行わない、デフォルトはFalse。
 
     """
 
     def __init__(self, instance_id, dry_run=False):
-        """初期化する。
-
-        Args:
-            instance_id (str): 対象のEC2インスタンスID。
-            dry_run (bool, optional): Trueの場合は実際の起動を行わない、デフォルトはFalse。
-
-        """
         self._state = State.UNDEFINED
         self._instance_id = instance_id
         self._dry_run = dry_run
@@ -40,7 +32,7 @@ class EC2Instance:
 
     @property
     def state(self):
-        """インスタンスの現在の状態。
+        """State: インスタンスの現在の状態。
 
         インスタンスの現在の状態を表す。
         本クラスの各種メソッドを呼出すタイミングによって自動的に変化する。
@@ -50,12 +42,12 @@ class EC2Instance:
 
     @property
     def instance_id(self):
-        """対象のEC2インスタンスID。"""
+        """str: 対象のEC2インスタンスID。"""
         return self._instance_id
 
     @property
     def dry_run(self):
-        """ドライランモードの場合は真を表す真偽値。"""
+        """bool: ドライランモードの場合は真を表す真偽値。"""
         return self._dry_run
 
     def _describe_instance(self):
@@ -112,7 +104,7 @@ class EC2Instance:
         """EC2インスタンスを起動する。
 
         Returns:
-            dict: boto3のstart_instancesレスポンス。ドライランの場合はNone。
+            dict | None: boto3のstart_instancesレスポンス。ドライランの場合はNone。
 
         Raises:
             ClientError: インスタンスの起動に失敗した場合。
@@ -144,24 +136,21 @@ class EC2Instance:
 
 
 class State(Enum):
-    """EC2インスタンスの状態を表す列挙子。
+    """EC2インスタンスの状態を表す列挙子。"""
 
-    Attributes:
-        UNDEFINED: 初期状態。
-        DRY_RUN: ドライランモードで実行した状態。
-        INSTANCE_ID_IS_NOT_STRING: インスタンスIDが文字列でない状態。
-        INSTANCE_ID_IS_NOT_FOUND: インスタンスIDが見つからない状態。
-        INSTANCE_IS_NOT_RUNNING: インスタンスが起動中でない状態。
-        INSTANCE_IS_RUNNING: インスタンスが起動中の状態。
-        INSUFFICIENT_CAPACITY: キャパシティ不足の状態。
-        INSTANCE_STARTING_IS_FAILED: インスタンスの起動に失敗した状態。
-
-    """
     UNDEFINED = auto()
+    """int: 初期状態。"""
     DRY_RUN = auto()
+    """int: ドライランモードで実行した状態。"""
     INSTANCE_ID_IS_NOT_STRING = auto()
+    """int: インスタンスIDが文字列でない状態。"""
     INSTANCE_ID_IS_NOT_FOUND = auto()
+    """int: インスタンスIDが見つからない状態。"""
     INSTANCE_IS_NOT_RUNNING = auto()
+    """int: インスタンスが起動中でない状態。"""
     INSTANCE_IS_RUNNING = auto()
+    """int: インスタンスが起動中の状態。"""
     INSUFFICIENT_CAPACITY = auto()
+    """int: キャパシティ不足の状態。"""
     INSTANCE_STARTING_IS_FAILED = auto()
+    """int: インスタンスの起動に失敗した状態。"""

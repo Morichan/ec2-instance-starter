@@ -13,15 +13,12 @@ class Authorizer:
     IAMユーザーのアクセスキーを用いたBasic認証により、APIへのアクセス可否を判定する。
     環境変数 IS_SKIPPED を true と設定している場合、認証スキップができる（Lambda自体の実行はする）。
 
+    Args:
+        event (dict): API Gatewayから受取ったイベント。
+
     """
 
     def __init__(self, event):
-        """初期化する。
-
-        Args:
-            event (dict): API Gatewayから受取ったイベント。
-
-        """
         self._event = event
         self._is_skipped = os.getenv('IS_SKIPPED') == 'true'
 

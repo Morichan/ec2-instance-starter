@@ -6,41 +6,30 @@ class Response:
 
     設定された状態に基づき、HTTPステータスコードとボディを含むレスポンスを生成する。
 
-    Attributes:
-        status_code (int): HTTPステータスコード。
-        body (str): ドライランモードの場合は真を表す真偽値。
-        state (State): レスポンスの現在の状態。
-
     """
 
     def __init__(self):
-        """初期化する。
-
-        stateの初期値はNoneState。
-
-        """
         self.state = NoneState()
 
     @property
     def status_code(self):
-        """HTTPステータスコード。"""
+        """int: HTTPステータスコード。"""
         return self.state.status_code
 
     @property
     def body(self):
-        """JSONシリアライズしたレスポンスボディ。"""
+        """str: JSONシリアライズしたレスポンスボディ。"""
         return json.dumps({
             "message": self.state.body_message,
         })
 
     @property
     def state(self):
-        """レスポンスの現在の状態。"""
+        """State: レスポンスの現在の状態。初期値はNoneState。"""
         return self._state
 
     @state.setter
     def state(self, state):
-        """レスポンスの状態を設定する。"""
         self._state = state
 
     def create_response(self):
@@ -48,6 +37,10 @@ class Response:
 
         Returns:
             dict: HTTPステータスコードとボディを含むレスポンス。
+                {
+                    "statusCode": int,
+                    "body": str
+                }
 
         """
         return {
@@ -60,10 +53,10 @@ class State:
     """レスポンスの状態を表す基底クラス。
 
     具象クラスは status_code と body_message を必ずオーバーライドする必要がある。
+    オブジェクト生成時に上記がオーバーライドされているか確認する。
 
-    Attributes:
-        status_code: HTTPステータスコード。
-        body_message: レスポンスボディに設定する文字列。
+    Raises:
+        NotImplementedError: 実装必須プロパティが実装されていない場合。
 
     """
 
@@ -72,13 +65,21 @@ class State:
 
     @property
     def status_code(self):
+        """int: HTTPステータスコード。"""
         raise NotImplementedError
 
     @property
     def body_message(self):
+        """str: レスポンスボディに設定する文字列。"""
         raise NotImplementedError
 
     def check(self):
+        """実装必須メソッドが正常に実装されているかチェックする。
+
+        Raises:
+            NotImplementedError: 実装必須プロパティが実装されていない場合。
+
+        """
         self._check_must_overriding_methods()
 
     def _check_must_overriding_methods(self):

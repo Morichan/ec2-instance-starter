@@ -1,0 +1,29 @@
+src.aws\_resources.lambda\_function package
+===========================================
+
+Submodules
+----------
+
+src.aws\_resources.lambda\_function.request module
+--------------------------------------------------
+
+.. automodule:: src.aws_resources.lambda_function.request
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+src.aws\_resources.lambda\_function.response module
+---------------------------------------------------
+
+.. automodule:: src.aws_resources.lambda_function.response
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: src.aws_resources.lambda_function
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,29 @@
+src.aws\_resources package
+==========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.aws_resources.lambda_function
+
+Submodules
+----------
+
+src.aws\_resources.ec2\_instance module
+---------------------------------------
+
+.. automodule:: src.aws_resources.ec2_instance
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: src.aws_resources
+   :members:
+   :show-inheritance:
+   :undoc-members:

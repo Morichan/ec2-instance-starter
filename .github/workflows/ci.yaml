@@ -24,6 +24,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install pipenv
         pipenv install --dev
+    - name: Check Dependencies
+      run: |
+        pip check
     - name: Run Tests
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}

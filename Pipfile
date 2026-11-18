@@ -13,10 +13,12 @@ convert-docs = "sphinx-apidoc -f -o docs-src/ src/"
 build-docs = "sphinx-build -b html docs-src/ docs/"
 
 [packages]
-boto3 = "~=1.19"
+# dev-packagesのaws-sam-cliで利用するboto3とのバージョン差異を無くすため、
+# packagesとdev-packagesのboto3は同じバージョンにすることが望ましい
+boto3 = "==1.43.108"
 
 [dev-packages]
-boto3 = "~=1.26"
+boto3 = "==1.43.108"
 pyyaml = ">=6.0.3"
 pytest = ">=9.0"
 pytest-mock = ">=3.14"
@@ -26,7 +28,7 @@ moto = "~=5.1.0"
 sphinx = "*"
 sphinx-rtd-theme = "*"
 pyopenssl = "~=26.0.0"
-aws-sam-cli = "~=1.161.0"
+aws-sam-cli = "==1.172.1"
 
 [requires]
 python_version = "3.14"
